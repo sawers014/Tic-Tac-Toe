@@ -1,4 +1,3 @@
-
 #include <cctype>
 #include<iostream>
 using namespace std;
@@ -20,7 +19,6 @@ int is_solved(int board[3][3]) {
         if (board[0][x] == 2 && board[1][x] == 2 && board[2][x] == 2)return 2;
              
         for(int y=0; y < 3; y++)   
-    
             if (board[x][y] == 0) empty += 1;
     }
     if (empty > 0) answer =-1;
@@ -34,8 +32,7 @@ int main(){
         {0, 0, 0},
         
     };
-    int line;
-    int column;
+    int line, column;
     char choice;
             cout<<"write 'x' if you'd like the 'x' to start or type 'o' to make the 'o' start ";
              cin>>choice;
