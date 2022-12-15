@@ -36,17 +36,19 @@ function is_solved(board) {
     let row, column, choice;
 
         const prompt = require('prompt-sync')();
-        choice = prompt("write 'x' if you'd like the 'x' to start or type 'o' to make the 'o' start ");
-        choice.toLocaleLowerCase()   // so it works even if the user input the choice in UPPERCASE
-           
-    for (let i = 0; i < 9; i++) {
-  
+        let ch = prompt("write 'x' if you'd like the 'x' to start or type 'o' to make the 'o' start ");
+        choice = ch.toLocaleLowerCase()   // so it works even if the user input the choice in UPPERCASE
+        console.log(choice)        
+    for (let i = 0; i < 9; i++) 
+    {
     board.forEach(v=>console.log(...v)); //print the board
         
-        row = prompt("choose a row 1-3 ");
-        row=Number(row)   //convert to integer, because by default the input is treated as string
-        column= prompt("choose a column 1-3 ");;
-        column=Number(column)
+        do {
+        row = Number(prompt("choose a row 1-3 ")); //convert to integer, because by default the input is treated as string
+        column= Number(prompt("choose a column 1-3 "));
+       
+           if(board[row - 1][column - 1] != 0 )  console.log("That position is not free") 
+        } while(board[row - 1][column - 1] !=0) 
         if (choice == 'x') {
             board[row - 1][column - 1] = 1;
             choice = 'o';
