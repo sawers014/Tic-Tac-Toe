@@ -1,8 +1,9 @@
 /* -1 no one won, and there are still empty spaces
- 1 'O' have won
+ 1 'X' have won
  2 'O' have won
  0 there are no free square and no one one, so it's a draw 
      TODO make the is_solved to work with char and not let, and make the board be full of chars instead of numbers
+     TODO make a condition to check if the user writed something that is not a number
 */
 function is_solved(board) {
     let answer= 0
@@ -42,13 +43,18 @@ function is_solved(board) {
     for (let i = 0; i < 9; i++) 
     {
     board.forEach(v=>console.log(...v)); //print the board
-        
-        do {
-        row = Number(prompt("choose a row 1-3 ")); //convert to integer, because by default the input is treated as string
-        column= Number(prompt("choose a column 1-3 "));
-       
-           if(board[row - 1][column - 1] != 0 )  console.log("That position is not free") 
-        } while(board[row - 1][column - 1] !=0) 
+        do  {
+            row = Number(prompt("choose a row 1-3 ")); //convert to integer, because by default the input is treated as string
+            column= Number(prompt("choose a column 1-3 "));         
+            try {   //error handler
+                if (row>3 || column>3)  throw "that position doesn't exist";
+                if(board[row - 1][column - 1] != 0 )  throw "that position is not free";
+            }
+                catch(e) {
+                    console.log("Error, " + e)
+                    continue  
+                }
+        } while(row > 3 || column>3) 
         if (choice == 'x') {
             board[row - 1][column - 1] = 1;
             choice = 'o';
@@ -61,15 +67,11 @@ function is_solved(board) {
             case 1:
                 console.log("The 'x' have won ")
                 return 0;
-                break;
-
             case 2:
                 console.log("The 'o' have won")
                 return 0;
-                break;
             case 0:
                 console.log("it's a draw")
                 return 0;
-                break;
         }
     }
