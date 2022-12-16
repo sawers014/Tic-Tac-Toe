@@ -45,8 +45,7 @@ function is_solved(board) {
     board.forEach(v=>console.log(...v)); //print the board
         do  {
             row =  Number(prompt("choose a row 1-3 ")); //convert to integer, because by default the input is treated as string
-            column= Number(prompt("choose a column 1-3 ")); 
-            console.log("int num is" + row)        // round the number so it works if the user input a float number (ex 1.2)     
+            column= Number(prompt("choose a column 1-3 "));    
             try {   //error handler
                 if (row>3 || column>3 || row<1 || column<1 )  throw "that position doesn't exist";
                 if(board[row - 1][column - 1] != 0 )  throw "that position is not free";
