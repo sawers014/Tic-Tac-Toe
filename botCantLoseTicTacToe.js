@@ -11,6 +11,7 @@ function IA(board) {
             else board[0][0]=1; // if the other corner is not free, the second best choice is to pick the center(we have won)     
     }
     else if (round == 2) {
+        if(board[0][2]==1 && board[1][1]== 0) board[1][1]=1   
                     //[0,?,1],
                     //[?,2,?],
                     //[1,?,0]  
@@ -22,7 +23,7 @@ function IA(board) {
                 else if(board[1][2]==2) board[1][0]=1
         }
         else if(board[0][2] == 1) { //we got have a 'O' in opposite corners 
-               
+
             if(board[1][1]==0) board[1][1]=1   //the user picked the left corner and has given us the instant win
             else if(board[0][1] == 0 && board[1][0]== 0)  { //check if the user has picked the left corner 
                 
@@ -43,7 +44,8 @@ function IA(board) {
                 //[1,?,2],
                 //[?,?,?],
                 //[1,?,?]
-        }         
+        }   
+           
     }
     else if(round == 3) {
         if(board[0][2]==1 ) { //we got the corner      
