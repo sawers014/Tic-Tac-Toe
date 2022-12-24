@@ -15,7 +15,7 @@ function IA(board) {
                     //[0,?,1],
                     //[?,2,?],
                     //[1,?,0]  
-        if(board[1][1]==2 && board[1][0]==2  || board[2][1]==2 || board[0][1]==2 || board[1][2]==2) {
+        else if(board[1][1]==2 && board[1][0]==2  || board[2][1]==2 || board[0][1]==2 || board[1][2]==2) {
             
             if (board[2][1] == 2)  board[0][1]=1
                 else if(board[1][0]==2) board[1][2]=1
@@ -25,13 +25,11 @@ function IA(board) {
         else if(board[0][2] == 1) { //we got have a 'O' in opposite corners 
 
             if(board[1][1]==0) board[1][1]=1   //the user picked the left corner and has given us the instant win
-            else if(board[0][1] == 0 && board[1][0]== 0)  { //check if the user has picked the left corner 
+                else if(board[0][1] == 0 && board[1][0]== 0)  { //check if the user has picked the left corner 
                 
-                if (board[0][0]==0) {
-                    board[0][0]=1
-                }
-                
-                else if(board[2][2]==0) board[2][2]=1
+                    if (board[0][0]==0) board[0][0]=1
+                    
+                    else if(board[2][2]==0) board[2][2]=1
                     else if(board[1][1]==0) board[1][1]=1
                 }
                     //[0,0,1],
@@ -145,7 +143,6 @@ function is_solved(board) {
             board[row - 1][column - 1] = 2; //user move
             round++; //increase  every time the user makes a move
             IA(board, round)
-           
         switch (is_solved(board)) {
             case 1:
                 console.log("The 'x' have won ")
