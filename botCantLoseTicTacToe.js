@@ -2,7 +2,6 @@
  1 'X' have won (so the bot WON)
  2 'O' have won (you won)
  0 there are no free square and no one one, so it's a draw 
-     TODO make the board be full of chars instead of numbers
 */
 function IA(board) {
     if(round==1) {
@@ -43,14 +42,15 @@ function IA(board) {
                 //[?,?,?],
                 //[1,?,?]
         }   
-           
     }
     else if(round == 3) {
         if(board[0][2]==1 ) { //we got the corner      
             //[?,?,1],
             //[?,0,?],
             //[1,?,?]  
-            if(board[0][0] == 1 ) { 
+            if(board[1][0]==1 && board[0][0]==0)board[0][0]=1 //why would someone not cover the corner?
+            else if(board[1][2]==1 && board[2][2]==0) board[2][2]=1 // will someone actually play this?  
+            else if(board[0][0] == 1 ) { 
                 //we suppose that the center is not free otherwise the bot will have won in the previous round    
                 //[1,?,1],
                 //[?,0,?],
@@ -116,7 +116,7 @@ function is_solved(board) {
         }
     console.log("You are gonna play as the 'O', so the bot will make the first move. 'X' are '1. therefore 'O are 2, '0' means that the box is empty")
     //explain to the user
-    board =[    //TODO convert to CHAR
+    board =[    
         [0,0,0],
         [0,0,0],
         [1,0,0]
@@ -139,7 +139,6 @@ function is_solved(board) {
                     row=4
                 }
         } while(row > 3 || column>3)
-
             board[row - 1][column - 1] = 2; //user move
             round++; //increase  every time the user makes a move
             IA(board, round)
