@@ -74,6 +74,7 @@ function IA(board) {
                     else if(board[1][0]==2 && board[1][2]==0)board[1][2]=2
                     else if(board[2][1]==2 && board[0][1]==0)board[0][1]=2
                     else if(board[2][0]==1 && board[1][0]==1 && board[0][0]==0)board[0][0]=2
+                    else if(board[0][1]==1 && board[1][2]==1 && board[2][2]==0)board[2][2]=2
                     else {// we got the center and the user didn't let us a free win
                       
                         if(board[0][0]==1) {
@@ -104,7 +105,6 @@ function IA(board) {
                     else if(board[0][0]==2 && board[2][0]==2 && board[1][0]==0)board[1][0]=2
                     
                     else if(board[2][2]==1 && board[0][0]==0)board[0][0]=2  //block the corner attack
-                    
 
                     else if(board[2][1]==1 && board[0][1]==0)board[0][1]=2  //block the non-corner attacks
                     else if(board[1][0]==1 && board[1][2]==0)board[1][2]=2 
@@ -121,6 +121,7 @@ function IA(board) {
         if(board[1][1]==2){//got the center
             
             if(board[1][0]==2 && board[1][2]==0)board[1][2]=2//check for a instant win
+            else if(board[0][0]==2 && board[0][1]==0 && board[0][2]==2)board[0][1]=2
             else if(board[1][0]==0 && board[1][2]==2)board[1][0]=2
             else if(board[0][1]==2 && board[2][1]==0)board[2][1]=2
             else if(board[0][1]==0 && board[2][1]==2)board[0][1]=2
@@ -144,8 +145,7 @@ function IA(board) {
                     else if(board[1][0]==1 && board[2][0]==1)board[2][0]=2
                     else if(board[0][1]==0)board[0][1]=2
                     else if(board[1][0]==0 && board[2][0]==0)board[2][0]=2
-                    else if(board[1][0]==0)board[1][0]=2
-                    
+                    else if(board[1][0]==0)board[1][0]=2          
                 }
                 if(board[2][2]==1){
                     if(board[2][0]==1 && board[2][1]==0)board[2][1]=2
@@ -168,7 +168,6 @@ function IA(board) {
             else if(board[0][1]==0) board[0][1]=2
             else if(board[1][0]==0) board[1][0]=2
         }
-        
     }
 }
 function is_solved(board) {
@@ -189,7 +188,6 @@ function is_solved(board) {
         if (empty > 0) answer =-1;
     return answer;
     }
-    
     let board = new Array(3); // first array equivalent to rows 
         for(i=0; i<board.length; i++) {   // inner array equivalent to columns
             board[i] = new Array(3);
