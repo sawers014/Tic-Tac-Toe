@@ -1,18 +1,62 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Tic Tac Toe</title>    
+        <title>Tic Tac Toe</title> 
+        
+        <style>
+            body {
+              background-color: rgb(126, 193, 216);
+            }
+            
+            h1 {
+              color: rgb(12, 11, 11);
+              text-align: center;
+              font-size: 80px;
+            }
+            
+            p {
+              font-family: sans-serif;
+              font-size: 25px;
+            }
+            .board {
+                font-size: 40px;
+                border: 5px outset red;
+                background-color: lightblue; 
+               
+            }
+
+            </style>
+
+
+
     </head>
     
     <body>
         <script>
+
         let round=0 //the variable round is used by the bot to chose the best move
         var board =[    
         [0,0,0],
         [0,0,0],
         [0,0,0]
         ]
-        function IA() {
+
+        setInterval(drawBoard, 1);  // we re-do the drawBoard function every 1ms so it always shows the updated board 
+
+        function drawBoard() {  //function that put into the table every single element of the array board
+        board.forEach((row, i) => 
+        row.forEach((item, j) => {
+            // element.innerHTML = "<img src='https://e7.pngegg.com/pngimages/482/392/png-clipart-black-x-mark-tic-tac-toe-oxo-holiday-tic-tac-toe-game-blue-cross-miscellaneous-angle.png' height=80 width=80>"; 
+
+        document.getElementById("cell" + i + j).innerHTML = item
+        })
+        )
+        theWinner()
+    }
+
+
+
+    function IA() {
     if(round==1) {
 
             if(board[1][1]== 0 ) board[1][1]=2 
@@ -151,9 +195,10 @@
                     
                     if(board[0][1]==1 && board[0][2]==0)board[0][2]=2
                     else if(board[2][0]==0)board[2][0]=2
-                    else if(board[1][0]==1 && board[2][0]==1)board[2][0]=2
+                    else if(board[1][0]==0 && board[2][0]==1)board[1][0]=2
                     else if(board[0][1]==0)board[0][1]=2
                     else if(board[1][0]==0 && board[2][0]==0)board[2][0]=2
+                    
                              
                 }
                 if(board[2][2]==1){
@@ -161,7 +206,8 @@
                     else if(board[2][0]==0 )board[2][0]=2
                     else if(board[2][1]==0)board[2][1]=2
                 }
-                if(board[0][0]==0 && board[0][1]==0)board[0][0]=2    
+                if(board[0][0]==0 && board[0][1]==0)board[0][0]=2
+                else if(board[1][0]==0 && board[1][2]==0)board[1][0]=2    
             }
         }
         else {  //the user has the center
@@ -213,14 +259,8 @@ function is_solved() {  //function that check the result of a game
 	                document.querySelector(".winner").style.display = "block";
         }
     }
-    function drawBoard() {  //function that put into the table every single element of the array board
-        board.forEach((row, i) => 
-        row.forEach((item, j) => {
-        document.getElementById("cell" + i + j).innerHTML = item
-        })
-        )
-        theWinner()
-    }
+   
+   
     function updateBoard() {    // function that update the array board with the input from the user
         console.log("updated the board")
         
@@ -243,7 +283,8 @@ function is_solved() {  //function that check the result of a game
                     document.querySelector(".board-error").innerHTML = "Error, " + e;
 	                document.querySelector(".board-error").style.display = "block";
                 }
-    }
+                    IA()
+            }
         </script>
      
         <H1 align="center">Play Tic Tac Toe</H1>
@@ -267,7 +308,9 @@ function is_solved() {  //function that check the result of a game
             <input type="button" value="botMove" id = "button2" onclick="IA();"> <!-- button to make the bot move -->
         </div>
 
-        <table>
+        <div>
+        <table class="board">
+            
             <tr>
                 <td id="cell00" ></td>
                 <td id="cell01" ></td>
@@ -287,6 +330,9 @@ function is_solved() {  //function that check the result of a game
             </tr>
 
         </table>
+
+    </div>
+    <img src="https://e7.pngegg.com/pngimages/482/392/png-clipart-black-x-mark-tic-tac-toe-oxo-holiday-tic-tac-toe-game-blue-cross-miscellaneous-angle.png" height=80 width=80>
         <p class="board-error"></p>
         <p class="winner"></p>
     </body>
