@@ -145,7 +145,7 @@ function IA(board) {
                     else if(board[1][0]==0 && board[2][0]==1)board[1][0]=2
                     else if(board[0][1]==0)board[0][1]=2
                     else if(board[1][0]==0 && board[2][0]==0)board[2][0]=2
-                    
+                    else if(board[2][1]==0 && board[2][2]==0)board[2][2]=2
                              
                 }
                 if(board[2][2]==1){
