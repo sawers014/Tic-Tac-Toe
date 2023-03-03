@@ -41,13 +41,13 @@
         [0,0,0],
         [0,0,0]
         ]
-
+        let won=false
     function drawBoard() {  //function that put into the table every single element of the array board
         board.forEach((row, i) => 
         row.forEach((item, j) => {
             if(item >0 ) { 
                 if(item==1) item= "<img src='https://png.monster/wp-content/uploads/2022/01/png.monster-456-370x280.png' alt='amogus' height=80 width=80>"
-                else item="<img src='https://www.transparentpng.com/thumb/red-circle/classic-border-red-circle-free-png-x2X5ZG.png' height=80 width=80>"
+                else item="<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Red_circle.svg/2048px-Red_circle.svg.png' height=80 width=80>"
             
             document.getElementById("cell" + i + j).innerHTML = item
             }   
@@ -97,6 +97,7 @@
                     else if(board[1][2]==1) board[2][2]=2
                     else if(board[1][0]==1) board[0][0]=2
                 }
+                else if(board[2][0]==1 && board[2][1]==1) board[2][2]=2
                 else if(board[2][0]==1 && board[1][0]==1) board[0][0]=2
                 else if(board[0][1]==1 || board[1][2]==1 || board[1][0]==1 || board[2][1]==1) board[0][2]=2 
             }
@@ -189,7 +190,8 @@
                 if(board[0][2]==1 ) {
                     if(board[1][2]==1 && board[2][2]==0)board[2][2]=2
                     else if(board[2][2]==1 && board[1][2]==0)board[1][2]=2
-                    else if(board[0][0]==1 && board[0][1]==0)board[0][1]=2 
+                    else if(board[0][0]==1 && board[0][1]==0)board[0][1]=2
+                    else if(board[2][2]==0 && board[1][2]==0) board[2][2]=2    //fallback cases
                 }
                 if(board[0][0]==1) {
                     
@@ -207,7 +209,8 @@
                     else if(board[2][1]==0)board[2][1]=2
                 }
                 if(board[0][0]==0 && board[0][1]==0)board[0][0]=2
-                else if(board[1][0]==0 && board[1][2]==0)board[1][0]=2    
+                else if(board[1][0]==0 && board[1][2]==0)board[1][0]=2
+                else if(board[0][0]==0 && board[1][0]==0)board[0][0]=2     
             }
         }
         else {  //the user has the center
@@ -245,23 +248,28 @@ function is_solved() {  //function that check the result of a game
     return answer;
     }
     function theWinner() {  //function that update a pharagraph to the result of the game
-        let who=is_solved()
-        if(who==1) {
-                document.querySelector(".winner").innerHTML = "the 'x' won";
-	                document.querySelector(".winner").style.display = "block";
-        }
-        else if(who==2){
-                document.querySelector(".winner").innerHTML = "the 'o' won";
-	                document.querySelector(".winner").style.display = "block";
-        }
-        else if(who==0){
-            document.querySelector(".winner").innerHTML = "it's a draw";
-	                document.querySelector(".winner").style.display = "block";
+        let winner=is_solved()
+        if(won==false) {
+            if(winner==1) {
+                    document.querySelector(".winner").innerHTML = "the 'x' won";
+                        document.querySelector(".winner").style.display = "block";
+                        won=true    // we do this to avoid the user from continuing the game after it is ended
+            }
+            else if(winner==2){
+                    document.querySelector(".winner").innerHTML = "the 'o' won";
+                        document.querySelector(".winner").style.display = "block";
+                        won=true
+            }
+            else if(winner==0){
+                document.querySelector(".winner").innerHTML = "it's a draw";
+                        document.querySelector(".winner").style.display = "block";
+                        won=true
+            }
         }
     }
    
     function updateBoard(column, row) {    // function that update the array board with the input from the user
-                if(board[row][column]==0){      // check if the square is empty so that the user cant overwrite            
+                if(board[row][column]==0 && won==false){      // check if the square is empty so that the user cant overwrite            
                     board[row][column] = 1  //we dont need to check anything because we will force the input to be correct, because we wont make the user able to overwrite squares.
                     document.querySelector(".board-error").innerHTML = "updated the board";
                     round++
