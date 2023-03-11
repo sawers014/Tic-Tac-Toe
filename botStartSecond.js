@@ -174,6 +174,7 @@ function IA(board) {
             
             else if(board[0][1]==0) board[0][1]=2
             else if(board[1][0]==0) board[1][0]=2
+            else if(board[0][0]==0) board[0][0]=2
         }
     }
 }
