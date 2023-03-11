@@ -1,25 +1,48 @@
+<!DOCTYPE html>
 <html>
     <head>
+        
         <meta charset="utf-8" />
         <title>Tic Tac Toe</title> 
         
         <style>
+            @keyframes flicker {    /* animation for the neon*/
+             25%, 32%, 45%, 53%, 67%, 80% {
+                text-shadow:
+                    0 0 7px #dfc3fa,
+                    0 0 10px #dfc3fa,
+                    0 0 21px #dfc3fa,
+                    0 0 42px rgb(24, 46, 248),
+                    0 0 82px rgb(8, 33, 252),
+                    0 0 92px rgb(8, 33, 252),
+                    0 0 102px rgb(8, 33, 252),
+                    0 0 121px rgb(8, 33, 252),
+                    0 0 151px rgb(8, 33, 252),
+                    0 0 170px rgb(8, 33, 252);
+                }
+                    95%, 15% {       
+                    text-shadow: 43px 0 43px #dfc3fa;
+                    }
+            }
             body {
               background-color: rgb(126, 193, 216);
             }
             
             h1 {
-              color: rgb(12, 11, 11);
+              
               text-align: center;
               font-size: 80px;
-            }
-            
+              color: #8916f5;
+              
+             animation: flicker 2.5s infinite alternate;
+            } 
             p {
+              text-align: center;   
               font-family: sans-serif;
-              font-size: 25px;
+              font-size: 35px;
             }
             .board {
-                
+                margin: auto;
                 border: 5px outset rgb(8, 87, 235);
                 background-color: rgb(8, 87, 235);
                
@@ -225,6 +248,7 @@
             
             else if(board[0][1]==0) board[0][1]=2
             else if(board[1][0]==0) board[1][0]=2
+            else if(board[0][0]==0) board[0][0]=2
         }
     }
 }
@@ -249,7 +273,9 @@ function is_solved() {  //function that check the result of a game
     }
     function theWinner() {  //function that update a pharagraph to the result of the game
         let winner=is_solved()
-        if(won==false) {
+        if(won) 
+                return      //we terminate this function, because the game is ended and to avoid nesting.
+        
             if(winner==1) {
                     document.querySelector(".winner").innerHTML = "the 'x' won";
                         document.querySelector(".winner").style.display = "block";
@@ -265,7 +291,7 @@ function is_solved() {  //function that check the result of a game
                         document.querySelector(".winner").style.display = "block";
                         won=true
             }
-        }
+        
     }
    
     function updateBoard(column, row) {    // function that update the array board with the input from the user
