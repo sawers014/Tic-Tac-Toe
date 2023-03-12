@@ -27,7 +27,14 @@
             body {
               background-color: rgb(126, 193, 216);
             }
-            
+            button{
+                position: absolute;
+                left: 47.5%;
+                color: #8916f5;
+                font-family: sans-serif;
+                font-size: 35px;
+                background-color: rgb(27, 43, 48);
+            }
             h1 {
               
               text-align: center;
@@ -64,14 +71,14 @@
         [0,0,0],
         [0,0,0]
         ]
-        let won=false
+        let gameEnded=false //we create a boolean to check when the game has ended, to stop the user from continuing a ended game and thus causing bugs
     function drawBoard() {  //function that put into the table every single element of the array board
         board.forEach((row, i) => 
-        row.forEach((item, j) => {
+        row.forEach((item, j) => {  //item contain the element of the array, so we need to check if it is a '1'(X) or a '2'(O)
             if(item >0 ) { 
                 if(item==1) item= "<img src='https://png.monster/wp-content/uploads/2022/01/png.monster-456-370x280.png' alt='amogus' height=80 width=80>"
                 else item="<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Red_circle.svg/2048px-Red_circle.svg.png' height=80 width=80>"
-            
+                
             document.getElementById("cell" + i + j).innerHTML = item
             }   
         
@@ -83,7 +90,7 @@
     if(round==1) {
 
             if(board[1][1]== 0 ) board[1][1]=2 
-            else board[2][0]=2; // if the other corner is not free, the second best choice is to pick the center(we have won)     
+            else board[2][0]=2; // if the other corner is not free, the second best choice is to pick the center(we have gameEnded)     
     }
     else if (round == 2) {
             if(board[1][1]==2) { //the bot has the center
@@ -254,8 +261,8 @@
 }
 
 function is_solved() {  //function that check the result of a game
-    let answer= 0
-    let empty = 0
+    var [answer, empty]=[0, 0]  //better notation
+    
         if (board[1][1] == 1 && board[0][0] == 1 && board[2][2] == 1 || board[1][1] == 1 && board[0][2] == 1 && board[2][0] == 1) return 1;
         if (board[1][1] == 2 && board[0][0] == 2 && board[2][2] == 2 || board[1][1] == 2 && board[0][2] == 2 && board[2][0] == 2) return 2;
 
@@ -273,83 +280,81 @@ function is_solved() {  //function that check the result of a game
     }
     function theWinner() {  //function that update a pharagraph to the result of the game
         let winner=is_solved()
-        if(won) 
-                return      //we terminate this function, because the game is ended and to avoid nesting.
+        if(gameEnded) 
+                return      //we terminate this function, because the game is ended and we want avoid nesting.
         
             if(winner==1) {
                     document.querySelector(".winner").innerHTML = "the 'x' won";
                         document.querySelector(".winner").style.display = "block";
-                        won=true    // we do this to avoid the user from continuing the game after it is ended
+                        gameEnded=true    // we do this to avoid the user from continuing the game after it is ended
             }
             else if(winner==2){
                     document.querySelector(".winner").innerHTML = "the 'o' won";
                         document.querySelector(".winner").style.display = "block";
-                        won=true
+                        gameEnded=true
             }
             else if(winner==0){
                 document.querySelector(".winner").innerHTML = "it's a draw";
                         document.querySelector(".winner").style.display = "block";
-                        won=true
+                        gameEnded=true
             }
-        
     }
-   
-    function updateBoard(column, row) {    // function that update the array board with the input from the user
-                if(board[row][column]==0 && won==false){      // check if the square is empty so that the user cant overwrite            
-                    board[row][column] = 1  //we dont need to check anything because we will force the input to be correct, because we wont make the user able to overwrite squares.
-                    document.querySelector(".board-error").innerHTML = "updated the board";
-                    round++
+    function updateBoard(row, column) {    // function that update the array board with the input from the user
+                if(board[row][column]==0 && gameEnded==false){      // check if the square is empty so that the user cant overwrite            
+                    board[row][column] = 1  //we dont need to check anything because we will force the input to be correct, because we gameEndedt make the user able to overwrite squares.
+                    round++     //increase the global variable round so that the IA works properly
                     drawBoard() //print only the new user move
                     IA(),
                      setTimeout(() => {    drawBoard() }, 200); //print the bot move after 0,2 seconds
                 }     
                   
             }
+    function resetBoard(){
+        board=[     //we reset the board to all 0 
+        [0,0,0],
+        [0,0,0],
+        [0,0,0]
+        ]
+        gameEnded=false // we set the boolean 'gameEnded' to false to allow the user to play
+        round=0   //we set 'round' to 0 so the IA of the bot reset to the first round  
+        board.forEach((row, i) => 
+        row.forEach((item, j) => {  //item contain the element of the array
+                
+            item="<img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard("+i+", "+j+")' height=80 width=80 >"
+            document.getElementById("cell" + i + j).innerHTML = item    // we assign it this way,so that the parameter of the function updateBoard are different for each
+            }                                                           //column and each row, thus making it playable again
+        
+        )
+        )
+        document.querySelector(".winner").innerHTML = "";   //we set the class '.winner' to NULL so that it reset the message of the result of the game
+        document.querySelector(".winner").style.display = "block"   
+    }
         </script>
      
-        <h1 style="text-align: center">Play Tic Tac Toe</h1>
-        <form action="/action.php">
-            
-            <label for="row">Insert the row where you want to put a marker on</label> <!-- input for the row -->
-                <input id="row" class="qty" type="text" placeholder="row" />
-                <br> <!-- space it -->
-                
-            <label for="column">Insert the column where you want to put a marker on</label> <!-- input for the column -->
-                <input id="column" class="qty" type="text" placeholder="column" />
-                <br> <!-- space it -->
-        
-            <button onclick="updateBoard()">Submit</button>
-           <!-- button to process the data that the user just fed us -->
-        </form>
-
-        <div>
-            <input type="button" value="print" id = "button1" onclick="drawBoard();">   <!-- button to print the board -->
-
-            <input type="button" value="botMove" id = "button2" onclick="IA();"> <!-- button to make the bot move -->
-        </div>
+        <h1 >Play Tic Tac Toe</h1> <!-- main title with CSS done in a a CSS sheet -->
 
         <table class="board" > <!-- the table that contain the board-->
             
             <tr>
                 <td id="cell00"  ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 0)' height=80 width=80 ></td>
-                <td id="cell01" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(1, 0)' height=80 width=80 ></td>
-                <td id="cell02" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(2, 0)' height=80 width=80 ></td> 
+                <td id="cell01" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 1)' height=80 width=80 ></td>
+                <td id="cell02" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 2)' height=80 width=80 ></td> 
             </tr>
             <tr>
-                <td id="cell10" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 1)' height=80 width=80 ></td>
+                <td id="cell10" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(1, 0)' height=80 width=80 ></td>
                 <td id="cell11" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(1, 1)' height=80 width=80 ></td><!-- the new row starts with 10 because of the function drawboard -->
-                <td id="cell12" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(2, 1)' height=80 width=80 ></td>   
+                <td id="cell12" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(1, 2)' height=80 width=80 ></td>   
             </tr>
             <tr>
-                <td id="cell20" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 2)' height=80 width=80 ></td>
-                <td id="cell21" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(1, 2)' height=80 width=80 ></td>
+                <td id="cell20" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(2, 0)' height=80 width=80 ></td> <!-- the new row starts with 20 because of the function drawboard -->
+                <td id="cell21" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(2, 1)' height=80 width=80 ></td>
                 <td id="cell22" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(2, 2)' height=80 width=80 ></td>
             </tr>
 
         </table>
-   
+        
         <p class="board-error"></p>
         <p class="winner"></p>
-
+        <button onclick="resetBoard()">Reset</button> <!-- button to completely reset the game -->
     </body>
 </html>
