@@ -9,7 +9,7 @@
             @keyframes flicker {    /* animation for the neon*/
              25%, 32%, 45%, 53%, 67%, 80% {
                 text-shadow:
-                    0 0 7px #dfc3fa,
+                    -1px 0 7px #dfc3fa,
                     0 0 10px #dfc3fa,
                     0 0 21px #dfc3fa,
                     0 0 42px rgb(24, 46, 248),
@@ -21,11 +21,11 @@
                     0 0 170px rgb(8, 33, 252);
                 }
                     95%, 15% {       
-                    text-shadow: 43px 0 43px #dfc3fa;
+                    text-shadow: 3px 0 43px #dfc3fa;
                     }
             }
             body {
-              background-color: rgb(126, 193, 216);
+              background-color: rgb(2, 23, 30);
             }
             button{
                 position: absolute;
@@ -44,6 +44,7 @@
              animation: flicker 2.5s infinite alternate;
             } 
             p {
+                color: #b1d0d8;
               text-align: center;   
               font-family: sans-serif;
               font-size: 35px;
@@ -57,14 +58,23 @@
             img { /* we will add the css for the single boards element here*/
                 border: 3px solid black;
             }
-
+            .swapper{
+                
+                margin: 5%;
+                position: absolute;
+                left: 41.5%;
+                color: #7ba84c;
+                font-family: sans-serif;
+                font-size: 55px;
+            }
             </style>
 
     </head>
     
     <body>
+        
         <script>
-
+        let botStart=false //bolean variable that will be used to switch gamemode (false= bot start second. true= bot start first)
         let round=0 //the variable round is used by the bot to chose the best move
         var board =[    
         [0,0,0],
@@ -86,178 +96,274 @@
         )
         theWinner() //check the result of the game
     }
-    function IA() {
-    if(round==1) {
+function IA() {
+    if(botStart){   //the bot will start first
+         
+            if(round==1) {
 
-            if(board[1][1]== 0 ) board[1][1]=2 
-            else board[2][0]=2; // if the other corner is not free, the second best choice is to pick the center(we have gameEnded)     
-    }
-    else if (round == 2) {
-            if(board[1][1]==2) { //the bot has the center
-                if(board[0][0]==1) {
-                    //[1,?,?],
-                    //[?,2,?],
-                    //[?,?,?]  
-                    if(board[0][2] == 1)board[0][1]=2
-                    else if(board[2][0] == 1) board[1][0]=2
-                    else if(board[0][1] == 1 ) board[0][2]=2
-                    else if (board[1][0] == 1) board[2][0]=2
-                    else if(board[2][2] ==1 || board[1][2]== 1 && board[0][1]==0) board [0][1]=2
-                    else if(board[2][1]==1) board[1][0]=2
-                    else board[1][2]=2
-                }
-                else if(board[2][2]== 1) {
+                if(board[0][2]== 0 || board[0][0]==2 || board[2][2]) board[0][2]=1 //if opponent has picked a corner that is not opposite to our we won
+                else board[0][0]=1; // if the other corner is not free, the second best choice is to pick the center(we have won)     
+        }
+        else if (round == 2) {
+            if(board[0][2]==1 && board[1][1]== 0) board[1][1]=1   
+                        //[0,?,1],
+                        //[?,2,?],
+                        //[1,?,0]  
+            else if(board[1][1]==2 && board[1][0]==2  || board[2][1]==2 || board[0][1]==2 || board[1][2]==2) {
+                
+                if (board[2][1] == 2)  board[0][1]=1
+                    else if(board[1][0]==2) board[1][2]=1
+                    else if(board[0][1]==2) board[2][1]=1
+                    else if(board[1][2]==2) board[1][0]=1
+            }
+            else if(board[0][2] == 1) { //we got have a 'O' in opposite corners 
+
+                if(board[1][1]==0) board[1][1]=1   //the user picked the left corner and has given us the instant win
+                    else if(board[0][1] == 0 && board[1][0]== 0)  { //check if the user has picked the left corner 
+                    
+                        if (board[0][0]==0) board[0][0]=1
+                        
+                        else if(board[2][2]==0) board[2][2]=1
+                        else if(board[1][1]==0) board[1][1]=1
+                    }
+                        //[0,0,1],
+                        //[0,?,?],
+                        //[1,?,?]  
+            }
+            else if(board[0][2]==2) { //the opposite corner is taken by the user, will be a win for the bot
+                if(board[1][0]==0) board[1][0]=1; //check for an instant win
+                    else board[2][2]=1;
+                    //[1,?,2],
                     //[?,?,?],
-                    //[?,2,?],
-                    //[?,?,1]  
-                    if(board[0][2] == 1) board[1][2]=2
-                    else if(board[2][0]==1) board[2][1]=2
-                    else if (board[1][2]==1) board[0][2]=2
-                    else if(board[2][1]==1) board[2][0]=2
-                    else if(board[0][1]==1 ) board[1][0]=2
-                    else if(board[1][0]==1) board[0][1]=2 //y do they play this       
+                    //[1,?,?]
+            }   
+        }
+        else if(round == 3) {
+            if(board[0][2]==1 ) { //we got the corner      
+                //[?,?,1],
+                //[?,0,?],
+                //[1,?,?]  
+                if(board[1][0]==1 && board[0][0]==0)board[0][0]=1 //why would someone not cover the corner?
+                else if(board[1][2]==1 && board[2][2]==0) board[2][2]=1 // will someone actually play this?  
+                else if(board[0][0] == 1 ) { 
+                    //we suppose that the center is not free otherwise the bot will have won in the previous round    
+                    //[1,?,1],
+                    //[?,0,?],
+                    //[1,?,?]  
+                        if(board[0][1] == 0)  board[0][1] = 1;        
+                        else if(board[1][0] == 0) board[1][0] = 1
                 }
-                else if(board[0][2]==1) {
+                else if(board[2][2] == 1 ) {    
+                    //[?,?,1],
+                    //[?,0,?],
+                    //[1,?,1]
+                    if(board[2][1] == 0)  board[2][1] = 1;
+                    else if(board[1][2] == 0) board[1][2] = 1;       
+                }
+                else if(board[1][1]==2) {  
                     //[?,?,1],
                     //[?,2,?],
-                    //[?,?,?]          
-                    if(board[2][0]==1) board[0][1]=2
-                    else if (board[2][1]==1) board[0][1]=2
-                    else if(board[0][1]==1) board[0][0]=2
-                    else if(board[1][2]==1) board[2][2]=2
-                    else if(board[1][0]==1) board[0][0]=2
+                    //[1,?,?]  
+                    if(board[2][2] == 2) board[0][0] = 1
+                    else if (board[0][0] == 2) board[2][2] = 1
                 }
-                else if(board[2][0]==1 && board[2][1]==1) board[2][2]=2
-                else if(board[2][0]==1 && board[1][0]==1) board[0][0]=2
-                else if(board[0][1]==1 || board[1][2]==1 || board[1][0]==1 || board[2][1]==1) board[0][2]=2 
             }
-            else if(board[1][1]==1) {
+            else if(board[0][0]==1 )   { 
+                    //[1,?,2],
                     //[?,?,?],
-                    //[?,1,?],
-                    //[2,?,?] 
-                    if(board[0][0]==1)board[2][2]=2
-                    else if(board[0][1]==1)board[2][1]=2
-                    else if(board[0][2]==1)board[0][0]=2 //why would someone chose that?
-                    else if(board[1][0]==1)board[1][2]=2
-                    else if(board[1][2]==1)board[1][0]=2
-                    else if(board[2][1]==1)board[0][1]=2
-                    else if(board[2][2]==1)board[0][0]=2
-            }
-        }    
-    else if(round == 3) {
-                if(board[1][1]==2) {//got the center       
-                    //[?,?,?],
-                    //[?,2,?],
-                    //[?,?,?]
-                    if(board[0][2]==2 && board[2][0] == 0)board[2][0]=2
-                    else if(board[0][0]==2 && board[2][2]==0)board[2][2]=2
-                    else if(board[1][2]==2 && board[1][0]==0) board[1][0]=2
-                    else if(board[2][0]==2 && board[0][2]==0)board[0][2]=2
-                    else if(board[2][2]==2 && board[0][0]==0) board[0][0]=2
-                    else if(board[0][1]==2 && board[2][1]==0)board[2][1]=2
-                    else if(board[1][0]==2 && board[1][2]==0)board[1][2]=2
-                    else if(board[2][1]==2 && board[0][1]==0)board[0][1]=2
-                    else if(board[2][0]==1 && board[1][0]==1 && board[0][0]==0)board[0][0]=2
-                    else if(board[0][1]==1 && board[1][2]==1 && board[2][2]==0)board[2][2]=2
-                    else {// we got the center and the user didn't let us a free win
-                      
-                        if(board[0][0]==1) {
-                            if(board[0][2]==1 && board[0][1]==0) board[0][1]=2
-                            else if(board[2][0]==1 && board[1][0]==0) board[1][0]=2
-                            else if(board[0][1]==1 && board[0][2]==0) board[0][2]=2
-                            else if(board[2][2]==0)board[2][2]=2                
-                        }
-                        if(board[2][2]==1) {
-                            
-                            if(board[0][2]==1 && board[1][2]==0)board[1][2]=2
-                            else if(board[2][0]==1 && board[2][1]==0)board[2][1]=2
-                            else if(board[2][1]==1 && board[2][0]==0)board[2][0]=2
-                            else if(board[1][2]==1 && board[0][2]==0)board[0][2]=2
-                            
-                            else if(board[0][0]==0)board[0][0]=2
-                            else if(board[0][2]==0)board[0][2]=2 
-                        }
-                        else if(board[2][0]==1){
-                            if(board[2][1]==1 && board[2][2]==0)board[2][2]=2
-                        }                      
-                    }
-                }
-                else {  //we got no center
-                    if(board[2][2]==2 && board[2][1]==0)board[2][1]=2   //check the insta win
-                    else if(board[2][1]==2 && board[2][2]==0)board[2][2]=2
-                    else if(board[1][0]==2 && board[0][0]==0)board[0][0]=2
-                    else if(board[0][0]==2 && board[2][0]==2 && board[1][0]==0)board[1][0]=2
-                    
-                    else if(board[2][2]==1 && board[0][0]==0)board[0][0]=2  //block the corner attack
+                    //[1,?,?]         
+                    if(board[1][0]==0) board[1][0] = 1
+                    else if(board[2][1]==0) board[2][1]= 1
+                    else if(board[1][1]==0) board[1][1]= 1
+            }        
+        }
+        else if(round==4) {
+        if(board[0][1]==0) board[0][1]=1
+        else if(board[1][0]==0 )board[1][0]=1
+        else if(board[1][2]==0) board[1][2]=1
+        else if(board[2][1]==0)board[2][1]=1
+        }
+    }
 
-                    else if(board[2][1]==1 && board[0][1]==0)board[0][1]=2  //block the non-corner attacks
-                    else if(board[1][0]==1 && board[1][2]==0)board[1][2]=2 
-                    else if(board[0][0]==1){
-                        
-                        if(board[2][2]==0) board[2][2]=2
-                        else if(board[0][2]==1 && board[0][1]==0)board[0][1]=2
+    /*
+    the following code will be for "botStartSecond"
+    */
+
+
+    else{   
+        if(round==1) {
+
+                if(board[1][1]== 0 ) board[1][1]=2 
+                else board[2][0]=2; // if the other corner is not free, the second best choice is to pick the center(we have gameEnded)     
+        }
+        else if (round == 2) {
+                if(board[1][1]==2) { //the bot has the center
+                    if(board[0][0]==1) {
+                        //[1,?,?],
+                        //[?,2,?],
+                        //[?,?,?]  
+                        if(board[0][2] == 1)board[0][1]=2
+                        else if(board[2][0] == 1) board[1][0]=2
+                        else if(board[0][1] == 1 ) board[0][2]=2
+                        else if (board[1][0] == 1) board[2][0]=2
+                        else if(board[2][2] ==1 || board[1][2]== 1 && board[0][1]==0) board [0][1]=2
+                        else if(board[2][1]==1) board[1][0]=2
+                        else board[1][2]=2
                     }
-                    else if(board[0][1]==1 && board[1][0]==1)board[2][1]=2 //what is this move?        
+                    else if(board[2][2]== 1) {
+                        //[?,?,?],
+                        //[?,2,?],
+                        //[?,?,1]  
+                        if(board[0][2] == 1) board[1][2]=2
+                        else if(board[2][0]==1) board[2][1]=2
+                        else if (board[1][2]==1) board[0][2]=2
+                        else if(board[2][1]==1) board[2][0]=2
+                        else if(board[0][1]==1 ) board[1][0]=2
+                        else if(board[1][0]==1) board[0][1]=2 //y do they play this       
+                    }
+                    else if(board[0][2]==1) {
+                        //[?,?,1],
+                        //[?,2,?],
+                        //[?,?,?]          
+                        if(board[2][0]==1) board[0][1]=2
+                        else if (board[2][1]==1) board[0][1]=2
+                        else if(board[0][1]==1) board[0][0]=2
+                        else if(board[1][2]==1) board[2][2]=2
+                        else if(board[1][0]==1) board[0][0]=2
+                    }
+                    else if(board[2][0]==1 && board[2][1]==1) board[2][2]=2
+                    else if(board[2][0]==1 && board[1][0]==1) board[0][0]=2
+                    else if(board[0][1]==1 || board[1][2]==1 || board[1][0]==1 || board[2][1]==1) board[0][2]=2 
                 }
-    }
-    else if(round==4) {
-        
-        if(board[1][1]==2){//got the center
+                else if(board[1][1]==1) {
+                        //[?,?,?],
+                        //[?,1,?],
+                        //[2,?,?] 
+                        if(board[0][0]==1)board[2][2]=2
+                        else if(board[0][1]==1)board[2][1]=2
+                        else if(board[0][2]==1)board[0][0]=2 //why would someone chose that?
+                        else if(board[1][0]==1)board[1][2]=2
+                        else if(board[1][2]==1)board[1][0]=2
+                        else if(board[2][1]==1)board[0][1]=2
+                        else if(board[2][2]==1)board[0][0]=2
+                }
+            }    
+        else if(round == 3) {
+                    if(board[1][1]==2) {//got the center       
+                        //[?,?,?],
+                        //[?,2,?],
+                        //[?,?,?]
+                        if(board[0][2]==2 && board[2][0] == 0)board[2][0]=2
+                        else if(board[0][2]==1 && board[1][2] == 1 && board[2][2]==0) board[2][2]=2
+                        else if(board[0][0]==2 && board[2][2]==0)board[2][2]=2
+                        else if(board[1][2]==2 && board[1][0]==0) board[1][0]=2
+                        else if(board[2][0]==2 && board[0][2]==0)board[0][2]=2
+                        else if(board[2][2]==2 && board[0][0]==0) board[0][0]=2
+                        else if(board[0][1]==2 && board[2][1]==0)board[2][1]=2
+                        else if(board[1][0]==2 && board[1][2]==0)board[1][2]=2
+                        else if(board[2][1]==2 && board[0][1]==0)board[0][1]=2
+                        else if(board[2][0]==1 && board[1][0]==1 && board[0][0]==0)board[0][0]=2
+                        else if(board[0][1]==1 && board[1][2]==1 && board[2][2]==0)board[2][2]=2
+                        else {// we got the center and the user didn't let us a free win
+                        
+                            if(board[0][0]==1) {
+                                if(board[0][2]==1 && board[0][1]==0) board[0][1]=2
+                                else if(board[2][0]==1 && board[1][0]==0) board[1][0]=2
+                                else if(board[0][1]==1 && board[0][2]==0) board[0][2]=2
+                                else if(board[2][2]==0)board[2][2]=2                
+                            }
+                            if(board[2][2]==1) {
+                                
+                                if(board[0][2]==1 && board[1][2]==0)board[1][2]=2
+                                else if(board[2][0]==1 && board[2][1]==0)board[2][1]=2
+                                else if(board[2][1]==1 && board[2][0]==0)board[2][0]=2
+                                else if(board[1][2]==1 && board[0][2]==0)board[0][2]=2
+                                
+                                else if(board[0][0]==0)board[0][0]=2
+                                else if(board[0][2]==0)board[0][2]=2 
+                            }
+                            else if(board[2][0]==1){
+                                if(board[2][1]==1 && board[2][2]==0)board[2][2]=2
+                            }                      
+                        }
+                    }
+                    else {  //we got no center
+                        if(board[2][2]==2 && board[2][1]==0)board[2][1]=2   //check the insta win
+                        else if(board[2][1]==2 && board[2][2]==0)board[2][2]=2
+                        else if(board[1][0]==2 && board[0][0]==0)board[0][0]=2
+                        else if(board[0][0]==2 && board[2][0]==2 && board[1][0]==0)board[1][0]=2
+                        
+                        else if(board[2][2]==1 && board[0][0]==0)board[0][0]=2  //block the corner attack
+
+                        else if(board[2][1]==1 && board[0][1]==0)board[0][1]=2  //block the non-corner attacks
+                        else if(board[1][0]==1 && board[1][2]==0)board[1][2]=2 
+                        else if(board[0][0]==1){
+                            
+                            if(board[2][2]==0) board[2][2]=2
+                            else if(board[0][2]==1 && board[0][1]==0)board[0][1]=2
+                        }
+                        else if(board[0][1]==1 && board[1][0]==1)board[2][1]=2 //what is this move?        
+                    }
+        }
+        else if(round==4) {
             
-            if(board[1][0]==2 && board[1][2]==0)board[1][2]=2//check for a instant win
-            else if(board[0][0]==2 && board[0][1]==0 && board[0][2]==2)board[0][1]=2
-            else if(board[1][0]==0 && board[1][2]==2)board[1][0]=2
-            else if(board[0][1]==2 && board[2][1]==0)board[2][1]=2
-            else if(board[0][1]==0 && board[2][1]==2)board[0][1]=2
-            else if(board[0][2]==2 && board[2][0]==0)board[2][0]=2
-            else if(board[0][2]==0 && board[2][0]==2)board[0][2]=2
-            else if(board[0][2]==2 && board[2][2]==2 && board[1][2]==0)board[1][2]=2
-            else if(board[2][2]==2 && board[0][0]==0)board[0][0]=2
-            else if(board[0][0]==2 && board[2][2]==0)board[2][2]=2
-            else if(board[0][0]==2 && board[0][2]==0)board[0][2]=2
-            
-            else {  //no free win
-                if(board[0][2]==1 ) {
-                    if(board[1][2]==1 && board[2][2]==0)board[2][2]=2
-                    else if(board[2][2]==1 && board[1][2]==0)board[1][2]=2
-                    else if(board[0][0]==1 && board[0][1]==0)board[0][1]=2
-                    else if(board[2][2]==0 && board[1][2]==0) board[2][2]=2    //fallback cases
+            if(board[1][1]==2){//got the center
+                
+                if(board[1][0]==2 && board[1][2]==0)board[1][2]=2//check for a instant win
+                else if(board[0][0]==2 && board[0][1]==0 && board[0][2]==2)board[0][1]=2
+                else if(board[1][0]==0 && board[1][2]==2)board[1][0]=2
+                else if(board[0][1]==2 && board[2][1]==0)board[2][1]=2
+                else if(board[0][1]==0 && board[2][1]==2)board[0][1]=2
+                else if(board[0][2]==2 && board[2][0]==0)board[2][0]=2
+                else if(board[0][2]==0 && board[2][0]==2)board[0][2]=2
+                else if(board[0][2]==2 && board[2][2]==2 && board[1][2]==0)board[1][2]=2
+                else if(board[2][2]==2 && board[0][0]==0)board[0][0]=2
+                else if(board[0][0]==2 && board[2][2]==0)board[2][2]=2
+                else if(board[0][0]==2 && board[0][2]==0)board[0][2]=2
+                
+                else {  //no free win
+                    if(board[0][2]==1 ) {
+                        if(board[1][2]==1 && board[2][2]==0)board[2][2]=2
+                        else if(board[2][2]==1 && board[1][2]==0)board[1][2]=2
+                        else if(board[0][0]==1 && board[0][1]==0)board[0][1]=2
+                        else if(board[2][2]==0 && board[1][2]==0) board[2][2]=2    //fallback cases
+                    }
+                    if(board[0][0]==1) {
+                        
+                        if(board[0][1]==1 && board[0][2]==0)board[0][2]=2
+                        else if(board[2][0]==0)board[2][0]=2
+                        else if(board[1][0]==0 && board[2][0]==1)board[1][0]=2
+                        else if(board[0][1]==0)board[0][1]=2
+                        else if(board[1][0]==0 && board[2][0]==0)board[2][0]=2
+                        else if(board[2][1]==0 && board[2][2]==0)board[2][2]=2
+                                
+                    }
+                    if(board[2][2]==1){
+                        if(board[2][0]==1 && board[2][1]==0)board[2][1]=2
+                        else if(board[2][0]==0 )board[2][0]=2
+                        else if(board[2][1]==0)board[2][1]=2
+                    }
+                    if(board[0][0]==0 && board[0][1]==0)board[0][0]=2
+                    else if(board[1][0]==0 && board[1][2]==0)board[1][0]=2
+                    else if(board[0][0]==0 && board[1][0]==0)board[0][0]=2     
                 }
-                if(board[0][0]==1) {
-                    
-                    if(board[0][1]==1 && board[0][2]==0)board[0][2]=2
-                    else if(board[2][0]==0)board[2][0]=2
-                    else if(board[1][0]==0 && board[2][0]==1)board[1][0]=2
-                    else if(board[0][1]==0)board[0][1]=2
-                    else if(board[1][0]==0 && board[2][0]==0)board[2][0]=2
-                    else if(board[2][1]==0 && board[2][2]==0)board[2][2]=2
-                             
-                }
-                if(board[2][2]==1){
-                    if(board[2][0]==1 && board[2][1]==0)board[2][1]=2
-                    else if(board[2][0]==0 )board[2][0]=2
-                    else if(board[2][1]==0)board[2][1]=2
-                }
-                if(board[0][0]==0 && board[0][1]==0)board[0][0]=2
-                else if(board[1][0]==0 && board[1][2]==0)board[1][0]=2
-                else if(board[0][0]==0 && board[1][0]==0)board[0][0]=2     
+            }
+            else {  //the user has the center
+                if(board[0][1]==1 && board[2][1]==0) board[2][1]=2
+                else if(board[2][2]==2 && board[1][2]==2 && board[0][2]==0)board[0][2]=2
+                else if(board[0][0]==0 && board[2][2]==1)board[0][0]=2
+                else if(board[0][1]==0 && board[2][1]==1) board[0][1]=2
+                else if(board[1][0]==1 && board[1][2]==0)board[1][2]=2
+                else if(board[1][0]==0 && board[1][2]==1)board[1][0]=2
+                else if(board[2][2]==2 && board[2][1]==0)board[2][1]=2
+                else if(board[2][0]==2 && board[2][1]==2 && board[2][2]==0)board[2][2]=2
+                
+                else if(board[0][1]==0) board[0][1]=2
+                else if(board[1][0]==0) board[1][0]=2
+                else if(board[0][0]==0) board[0][0]=2
             }
         }
-        else {  //the user has the center
-            if(board[0][1]==1 && board[2][1]==0) board[2][1]=2
-            else if(board[2][2]==2 && board[1][2]==2 && board[0][2]==0)board[0][2]=2
-            else if(board[0][0]==0 && board[2][2]==1)board[0][0]=2
-            else if(board[0][1]==0 && board[2][1]==1) board[0][1]=2
-            else if(board[1][0]==1 && board[1][2]==0)board[1][2]=2
-            else if(board[1][0]==0 && board[1][2]==1)board[1][0]=2
-            else if(board[2][2]==2 && board[2][1]==0)board[2][1]=2
-            else if(board[2][0]==2 && board[2][1]==2 && board[2][2]==0)board[2][2]=2
-            
-            else if(board[0][1]==0) board[0][1]=2
-            else if(board[1][0]==0) board[1][0]=2
-            else if(board[0][0]==0) board[0][0]=2
-        }
-    }
+    }//end of the IA for "bot Start Second"
 }
 
 function is_solved() {  //function that check the result of a game
@@ -299,44 +405,74 @@ function is_solved() {  //function that check the result of a game
                         gameEnded=true
             }
     }
+    var audio = new Audio('ding.mp3');  //audio is a variable that contain the audiofile that need to be played after a move
     function updateBoard(row, column) {    // function that update the array board with the input from the user
-                if(board[row][column]==0 && gameEnded==false){      // check if the square is empty so that the user cant overwrite            
-                    board[row][column] = 1  //we dont need to check anything because we will force the input to be correct, because we gameEndedt make the user able to overwrite squares.
+                if(board[row][column]==0 && gameEnded==false){  // check if the square is empty so that the user cant overwrite   
+                    if(botStart) { // in this case the user will play as the 'o'
+                        board[row][column] = 2   //we dont need to check anything because we will force the input to be correct, because we dont make  the user able to overwrite squares. 
+                    }
+                    else{ // in this case the user will play as the 'x'
+                        board[row][column] = 1  
+                    }
                     round++     //increase the global variable round so that the IA works properly
                     drawBoard() //print only the new user move
-                    IA(),
+                    IA()
+                    audio.play();   //play the 'ding' sound
+                    
                      setTimeout(() => {    drawBoard() }, 200); //print the bot move after 0,2 seconds
+                     
                 }     
-                  
+
+                
             }
     function resetBoard(){
-        board=[     //we reset the board to all 0 
-        [0,0,0],
-        [0,0,0],
-        [0,0,0]
-        ]
+      
         gameEnded=false // we set the boolean 'gameEnded' to false to allow the user to play
         round=0   //we set 'round' to 0 so the IA of the bot reset to the first round  
+        if(botStart){   //the bot will start first
+            board=[     //we reset the board to all 0, except the bottom left corner 
+            [0,0,0],
+            [0,0,0],
+            [1,0,0]
+            ]
+        }
+        else {  //the bot will start second
+            board=[     //we reset the board to all 0 
+            [0,0,0],
+            [0,0,0],
+            [0,0,0]
+            ]
+        }
         board.forEach((row, i) => 
         row.forEach((item, j) => {  //item contain the element of the array
-                
+                    
             item="<img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard("+i+", "+j+")' height=80 width=80 >"
             document.getElementById("cell" + i + j).innerHTML = item    // we assign it this way,so that the parameter of the function updateBoard are different for each
-            }                                                           //column and each row, thus making it playable again
-        
-        )
-        )
+        }                                                           //column and each row, thus making it playable again
+            
+                )   
+            )
         document.querySelector(".winner").innerHTML = "";   //we set the class '.winner' to NULL so that it reset the message of the result of the game
-        document.querySelector(".winner").style.display = "block"   
+        document.querySelector(".winner").style.display = "block"
+        setTimeout(() => { drawBoard() }, 100);//we need to update it in case the game mode switched   
+    }
+    function swap(){    //this function is used to change game mode (from bot start first -> to bot start second -> and vice-versa)
+        if (botStart){
+            botStart=false
+            resetBoard()   
+        }
+        else{
+            botStart=true
+            resetBoard()
+        }
     }
         </script>
-     
         <h1 >Play Tic Tac Toe</h1> <!-- main title with CSS done in a a CSS sheet -->
 
         <table class="board" > <!-- the table that contain the board-->
             
             <tr>
-                <td id="cell00"  ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 0)' height=80 width=80 ></td>
+                <td id="cell00" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 0)' height=80 width=80 ></td>
                 <td id="cell01" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 1)' height=80 width=80 ></td>
                 <td id="cell02" ><img src='https://static.vecteezy.com/system/resources/previews/001/209/957/original/square-png.png' onclick='updateBoard(0, 2)' height=80 width=80 ></td> 
             </tr>
@@ -356,5 +492,7 @@ function is_solved() {  //function that check the result of a game
         <p class="board-error"></p>
         <p class="winner"></p>
         <button onclick="resetBoard()">Reset</button> <!-- button to completely reset the game -->
+        <button onclick="swap()" class="swapper">Swap</button> <!-- button to switch gamemode(bot start second-> bot start first -> ) -->
+ 
     </body>
 </html>
